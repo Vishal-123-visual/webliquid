@@ -832,3 +832,4 @@ const StudentProfileDetailsPage = () => {
   )
 }
 export default StudentProfileDetailsPage
+

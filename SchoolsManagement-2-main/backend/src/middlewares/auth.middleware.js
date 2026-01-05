@@ -15,6 +15,11 @@ export const requireSignIn = async (req, res, next) => {
 
     const decoded = await jwt.verify(token, JWT_SECRET);
     req.user = await userModel.findById(decoded.userId).select("-password");
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized: User not found" });
+    }
     next();
   } catch (error) {
     console.error("JWT Error:", error.message);
@@ -26,16 +31,19 @@ export const requireSignIn = async (req, res, next) => {
 
 //admin acceess
 export const isAdmin = async (req, res, next) => {
-  //console.log(req.user);
+  console.log(req.user);
   try {
     const user = await userModel.findById(req?.user?._id);
-    // console.log(user);
-    if (
-      user?.role === "Admin" ||
-      user.role === "SuperAdmin" ||
-      user.role === "Counsellor"
-    ) {
-      next();
+     console.log(user);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: User not found",
+      });
+    }
+    const role = user.role;
+    if (role === "Admin" || role === "SuperAdmin" || role === "Counsellor") {
+      return next();
     } else {
       return res.status(401).json({
         error:
