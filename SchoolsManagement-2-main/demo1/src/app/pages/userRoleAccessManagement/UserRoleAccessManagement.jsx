@@ -106,7 +106,7 @@ const UserRoleAccessManagement = () => {
             {userRoleAccessData?.length > 0 ? (
               userRoleAccessData?.map((role) => (
                 <>
-                  <option value='Student'>{role.role}</option>
+                  <option value={role.role} key={role._id}>{role.role}</option>
                 </>
               ))
             ) : (
